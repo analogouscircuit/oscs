@@ -3,10 +3,10 @@
 # settings and rules.
 
 # library name
-lib.name = externals.oscs.hwextern
+lib.name = externals.oscs.duffosc~
 
 # input source file (class name == source file basename)
-class.sources = hwextern.c
+class.sources = duffosc~.c
 
 # all extra files to be included in binary distribution of the library
 datafiles =
