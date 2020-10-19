@@ -29,6 +29,10 @@ static inline t_sample f2(t_duffosc_tilde *x, t_sample x1, t_sample x2, t_sample
 	return DD_PI*f*( DD_PI*f*(B*cos(DD_PI*f*x->t) - x1*x1*x1) - k*x2);  
 }
 
+
+/*
+ * Main DSP loop -- optimize later
+ */
 static t_int *duffosc_tilde_perform(t_int *w)
 {
 	t_duffosc_tilde *x = (t_duffosc_tilde *)(w[1]);
@@ -70,8 +74,7 @@ static void duffosc_tilde_reset(t_duffosc_tilde *x)
 
 void duffosc_tilde_dsp(t_duffosc_tilde *x, t_signal **sp)
 {
-	dsp_add(duffosc_tilde_perform, 6, x,
-			sp[0]->s_vec, sp[1]->s_vec, sp[2]->s_vec, sp[3]->s_vec, sp[0]->s_n);
+	dsp_add(duffosc_tilde_perform, 6, x, sp[0]->s_vec, sp[1]->s_vec, sp[2]->s_vec, sp[3]->s_vec, sp[0]->s_n);
 }
 
 
@@ -89,7 +92,7 @@ void *duffosc_tilde_new(t_symbol *s, short argc, t_atom *argv)
 	if (argc >= 1) f0 = atom_getfloatarg(0, argc, argv);
 
 	x->f_x1 = x->f_x2 = 0.0;
-	x->f_freq = f0;
+	x->f = f0;
 	x->k = k0; 	  // make this inlet-determined
 	x->B = B0; 	  // make this inlet-determined
 	x->t = 0.0;
@@ -106,8 +109,8 @@ void duffosc_tilde_setup(void)
 								    (t_newmethod) duffosc_tilde_new,
 								    0,
 								    sizeof(t_duffosc_tilde),
-								    CLASS_DEFAULT,
-								    A_DEFFLOAT,
+								    0,
+									A_GIMME,
 									0);
 	CLASS_MAINSIGNALIN(duffosc_tilde_class, t_duffosc_tilde, f);
 	class_addmethod(duffosc_tilde_class, (t_method)duffosc_tilde_dsp, gensym("dsp"), 0);
